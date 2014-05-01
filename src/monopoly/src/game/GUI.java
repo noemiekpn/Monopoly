@@ -1,10 +1,15 @@
 package monopoly.src.game;
-import java.awt.image.*;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
+//import java.awt.image.*;
+//import java.awt.image.BufferedImage;
+//import java.io.File;
+//import java.io.IOException;
 
-import javax.imageio.ImageIO;
+//import javax.imageio.ImageIO;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Toolkit;
+
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
@@ -14,10 +19,20 @@ import javax.swing.JPanel;
  */
 
 public class GUI extends JFrame{
-	
 	private static final long serialVersionUID = 1L;
-
-	public GUI() {
+	JButton test = new JButton("Oh!");
+	GUI_PANEL mainPanel= new GUI_PANEL();
+	
+	public GUI(String screenBarName,int width, int height) {
+		/* Default Construction*/
+		Toolkit userConfig = Toolkit.getDefaultToolkit();
+		Dimension userScreenResolution = userConfig.getScreenSize();
+		setBounds(((userScreenResolution.width)/2)-(width/2),((userScreenResolution.height)/2)-(height/2), width, height);
+		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setTitle(screenBarName);
+		setVisible(true);
+		mainPanel.add(test);
+		getContentPane().add(mainPanel);
 		
 	}
 
@@ -26,7 +41,8 @@ public class GUI extends JFrame{
  class GUI_PANEL extends JPanel{
  private static final long serialVersionUID = 1L;
  
- public void paintComponent(){
+ public void paintComponent(Graphics g){
+	 super.paintComponent(g);
 	 
  }
 	
