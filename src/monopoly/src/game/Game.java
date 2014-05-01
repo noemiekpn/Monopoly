@@ -7,7 +7,6 @@ public class Game {
 		
 		mainSreen.loadHudOptions();
 		mainSreen.loadBoard();
-		mainSreen.loadDice();		
 		mainSreen.loadPlayers(6);
 	
 		mainSreen.loadBoardPositions();

@@ -1,10 +1,5 @@
 package monopoly.src.game;
-//import java.awt.image.*;
-//import java.awt.image.BufferedImage;
-//import java.io.File;
-//import java.io.IOException;
 
-//import javax.imageio.ImageIO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -43,7 +38,6 @@ public class GUI extends JFrame implements ActionListener{
 	private GUI_PANEL [] dice = new GUI_PANEL[2];
 	private GUI_PANEL hudOptions = new GUI_PANEL();
 	private GUI_PANEL [] players = new GUI_PANEL[6];
-	
 	private ImageLoader imgData = new ImageLoader();
 	private boolean alreadyRolled = false;
 	
@@ -145,9 +139,12 @@ public class GUI extends JFrame implements ActionListener{
 		
 		offerButton.setActionCommand("offer");
 		rollButton.addActionListener(this);
-		
+
 		hudOptions.setBounds(0, height-83,width, 45);
 		hudOptions.setOpaque(false);
+		hudOptions.setBackground(Color.BLUE);
+		hudOptions.setBounds(0, height-83,width, 45);
+		hudOptions.setOpaque(true);
 		
 		// Add buttons
 		hudOptions.add(rollButton);
