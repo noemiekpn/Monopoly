@@ -23,11 +23,19 @@ import javax.swing.JPanel;
 
 public class GUI extends JFrame{
 	private static final long serialVersionUID = 1L;
+	private int width=800;
+	private int height=600;
 	JButton test = new JButton("Oh!");
 	JLayeredPane baseLayer = new JLayeredPane();
-	GUI_PANEL mainPanel= new GUI_PANEL();
+	private GUI_PANEL mainPanel = new GUI_PANEL();
+	private GUI_PANEL dice = new GUI_PANEL();
+	private GUI_PANEL hudOptions = new GUI_PANEL();
+	private GUI_PANEL [] players = new GUI_PANEL[6];
 	
 	public GUI(String screenBarName,int width, int height) {
+		/*Attribution */
+		this.width=width;
+		this.height=height;
 		/* Default Construction*/
 		Toolkit userConfig = Toolkit.getDefaultToolkit();
 		Dimension userScreenResolution = userConfig.getScreenSize();
@@ -41,22 +49,70 @@ public class GUI extends JFrame{
 	
 	public void loadBoard() {
 			
-		/*Carrega o Panel do Board*/
+		/*Loads the Panel of the Board*/
 		mainPanel.setBackground(Color.darkGray);
 		mainPanel.add(test);
-		mainPanel.setBounds(0, 0, 1016, 400);
+		mainPanel.setBounds(0, 0, width-8, 400);
 		mainPanel.setOpaque(true);
-		baseLayer.add(mainPanel,0);
+		baseLayer.add(mainPanel,9);
 		//getContentPane().add(mainPanel,basicLayout.SOUTH,0);
 		
 	}
-	public void hudOptions() {
-		GUI_PANEL outro = new GUI_PANEL();
-		outro.setBackground(Color.BLUE);
-		outro.setBounds(0, 648,1016, 120);
-		outro.setOpaque(true);
-		baseLayer.add(outro,1);
+	public void loadHudOptions() {
+		hudOptions.setBackground(Color.BLUE);
+		hudOptions.setBounds(0, height-158,width-8, 120);
+		hudOptions.setOpaque(true);
+		baseLayer.add(hudOptions,1);
 		
+	}
+	public void loadDice(){
+		dice.setBackground(Color.RED);
+		dice.setBounds((width/2)-50, (height/2)-50, 100, 100);
+		dice.setOpaque(true);
+		baseLayer.add(dice,0);
+	}
+	public void loadPlayers(int amount){
+		players[0] = new GUI_PANEL();
+		players[1] = new GUI_PANEL();
+		players[2] = new GUI_PANEL();
+		players[3] = new GUI_PANEL();
+		players[4] = new GUI_PANEL();
+		players[5] = new GUI_PANEL();
+		
+		players[0].setBackground(Color.RED);
+		players[1].setBackground(Color.BLACK);
+		players[2].setBackground(Color.YELLOW);
+		players[3].setBackground(Color.BLUE);
+		players[4].setBackground(Color.PINK);
+		players[5].setBackground(Color.ORANGE);
+		
+		players[0].setBounds(0  , 124, 166, 65);
+		players[1].setBounds(858, 124, 166, 65);
+		players[2].setBounds(0  , 334, 166, 65);
+		players[3].setBounds(858, 334, 166, 65);
+		players[4].setBounds(0  , 543, 166, 65);
+		players[5].setBounds(858, 543, 166, 65);
+
+		players[0].setOpaque(true);
+		players[1].setOpaque(true);
+		players[2].setOpaque(true);
+		players[3].setOpaque(true);
+		players[4].setOpaque(true);
+		players[5].setOpaque(true);
+		int counter =0;
+		if (amount>6)
+			amount=6;
+		else if (amount<2)
+			amount=2;
+		while(amount!=0){
+			baseLayer.add(players[counter],2+counter);
+			amount--;
+			counter++;
+			
+		}
+			
+		
+			
 	}
 	public void unLoadBoard() {
 		getContentPane().remove(0);
