@@ -13,6 +13,7 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -36,6 +37,7 @@ public class GUI extends JFrame implements ActionListener{
 	private GUI_PANEL [] dice = new GUI_PANEL[2];
 	private GUI_PANEL hudOptions = new GUI_PANEL();
 	private GUI_PANEL [] players = new GUI_PANEL[6];
+	private ImageLoader imgData = new ImageLoader();
 	
 	public GUI(String screenBarName,int width, int height) {
 		/*Attribution */
@@ -49,15 +51,22 @@ public class GUI extends JFrame implements ActionListener{
 		setTitle(screenBarName);
 		setVisible(true);
 		getContentPane().add(baseLayer, BorderLayout.CENTER);
-		
+		File dataConfig;
+		try {
+				dataConfig= new File("src/res/data.config");
+				imgData.load (dataConfig);
+			}
+		catch(Exception e){	
+				e.printStackTrace();
+			} 
 	}
 	
 	public void loadBoard() {
 		/*Loads the Panel of the Board*/
 		mainPanel.setBackground(Color.darkGray);
-		mainPanel.setBounds(0, 0, width-8, 400);
+		mainPanel.setBounds(0, 0, width, 400);
 		mainPanel.setOpaque(true);
-		baseLayer.add(mainPanel, 20);
+		baseLayer.add(mainPanel, 0);
 		//getContentPane().add(mainPanel,basicLayout.SOUTH,0);
 	}
 	
@@ -81,7 +90,7 @@ public class GUI extends JFrame implements ActionListener{
 		hudOptions.add(adminButton);
 		hudOptions.add(offerButton);		
 		
-		baseLayer.add(hudOptions,2);
+		baseLayer.add(hudOptions,20);
 		
 	}
 	
@@ -94,7 +103,11 @@ public class GUI extends JFrame implements ActionListener{
 		dice[1].setBounds((width/2)+10, (height/2)-50, 100, 100);
 		dice[0].setOpaque(true);
 		dice[1].setOpaque(true);
-		baseLayer.add(dice[0],0);
+		dice[0].setImg(imgData.dice1, 1);
+		dice[1].setImg(imgData.dice2, 1);
+		dice[0].setImgPos(0, 0, 0, 100, 100, 0, 0, 100, 100);
+		dice[1].setImgPos(0, 0, 0, 100, 100, 0, 0, 100, 100);
+		baseLayer.add(dice[0],2);
 		baseLayer.add(dice[1],1);
 		
 	}
@@ -156,30 +169,110 @@ public class GUI extends JFrame implements ActionListener{
 
 }
 
- class GUI_PANEL extends JPanel{
- private static final long serialVersionUID = 1L;
- private int typeOfSet=0;
- private Image [] displayedImages;
- private int [] posX;
- private int [] posY;
- private int [] width;
- private int [] height;
- private int [] dX0;
- private int [] dY0;
- private int [] dX1;
- private int [] dY1;
- private int [] sX0;
- private int [] sY0;
- private int [] sX1;
- private int [] sY1;
- 
+class GUI_PANEL extends JPanel{
+private static final long serialVersionUID = 1L;
+private boolean hasImg=false;
+private int typeOfSet=0;
+private Image [] displayedImages;
+private int [] posX;
+private int [] posY;
+private int [] width;
+private int [] height;
+private int [] dX0;
+private int [] dY0;
+private int [] dX1;
+private int [] dY1;
+private int [] sX0;
+private int [] sY0;
+private int [] sX1;
+private int [] sY1;
+
+public void setImg(Image img, int type) {
+	 hasImg=true;
+	 displayedImages= new Image[1];
+	 if (type==0){
+		 posX = new int[1];
+		 posY = new int[1];
+		 width = new int[1];
+		 height = new int[1];
+	 }
+	 else if (type==1){
+		dX0 = new int[1];
+		dY0 = new int[1];
+		dX1 = new int[1];
+		dY1 = new int[1];
+		sX0 = new int[1];
+		sY0 = new int[1];
+		sX1 = new int[1];
+		sY1 = new int[1];
+		 
+	 }
+	 displayedImages[0]=img;
+	
+}
+public void setImg(Image []img, int type){
+	 hasImg=true;
+	 typeOfSet=type;
+	 displayedImages = new Image[img.length];
+	 if (type==0){
+		 posX = new int[img.length];
+		 posY = new int[img.length];
+		 width = new int[img.length];
+		 height = new int[img.length];
+	 }
+	 else if (type==1){
+		dX0 = new int[img.length];
+		dY0 = new int[img.length];
+		dX1 = new int[img.length];
+		dY1 = new int[img.length];
+		sX0 = new int[img.length];
+		sY0 = new int[img.length];
+		sX1 = new int[img.length];
+		sY1 = new int[img.length];
+		 
+	 }
+	 for(int i=0;i<img.length;i++){
+		 displayedImages[i]=img[i];
+	 }
+}
+public void setImgPos(int index, int posX, int posY, int width, int height) {
+	 typeOfSet=0;
+	 this.posX[index]= posX;
+	 this.posY[index]= posY;
+	 this.width[index]=width;
+	 this.height[index]=height;
+}
+public void setImgPos(int index, int dX0, int dY0,int dX1, int dY1,int sX0, int sY0,int sX1, int sY1) {
+	 typeOfSet=1;
+	 this.dX0[index]=dX0;
+	 this.dY0[index]=dY0;
+	 this.dX1[index]=dX1;
+	 this.dY1[index]=dY1;
+	 this.sX0[index]=sX0;
+	 this.sY0[index]=sY0;
+	 this.sX1[index]=sX1;
+	 this.sY1[index]=sY1;
+}
+private void drawImgs1(Graphics g){
+	for(int i=0; i< displayedImages.length;i++){
+		g.drawImage(displayedImages[i], posX[i], posY[i], width[i], height[i], null);
+		
+	}
+}
+private void drawImgs2(Graphics g ) {
+	for(int i=0; i< displayedImages.length;i++){
+		g.drawImage(displayedImages[i], dX0[i],dY0[i],dX1[i],dY1[i],sX0[i],sY0[i],sX1[i],sY1[i],null);
+	}	
+	
+}
 public void paintComponent(Graphics g){
 	 super.paintComponent(g);
-	 if(typeOfSet==0)
-		 drawImgs1(g);
-	 else
-		 drawImgs2(g);
-	 
+	 if (hasImg){
+		 if(typeOfSet==0)
+			 drawImgs1(g);
+		 else
+			 drawImgs2(g);
+	 }
 }
 	
 }

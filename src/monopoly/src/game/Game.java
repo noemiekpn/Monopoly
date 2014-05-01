@@ -5,8 +5,9 @@ public class Game {
 		GUI mainSreen = new GUI("Minha Tela",1024,768);
 		System.out.print("oi \n");
 		mainSreen.loadHudOptions();
-		mainSreen.loadDice();
 		mainSreen.loadBoard();
+		mainSreen.loadDice();
+		
 		mainSreen.loadPlayers(2);
 	}
 }
