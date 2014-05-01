@@ -9,6 +9,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -155,11 +156,30 @@ public class GUI extends JFrame implements ActionListener{
 
 }
 
-class GUI_PANEL extends JPanel{
-	private static final long serialVersionUID = 1L;
+ class GUI_PANEL extends JPanel{
+ private static final long serialVersionUID = 1L;
+ private int typeOfSet=0;
+ private Image [] displayedImages;
+ private int [] posX;
+ private int [] posY;
+ private int [] width;
+ private int [] height;
+ private int [] dX0;
+ private int [] dY0;
+ private int [] dX1;
+ private int [] dY1;
+ private int [] sX0;
+ private int [] sY0;
+ private int [] sX1;
+ private int [] sY1;
  
-	public void paintComponent(Graphics g){
-		super.paintComponent(g);
- }
+public void paintComponent(Graphics g){
+	 super.paintComponent(g);
+	 if(typeOfSet==0)
+		 drawImgs1(g);
+	 else
+		 drawImgs2(g);
+	 
+}
 	
 }
