@@ -10,6 +10,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -21,11 +23,13 @@ import javax.swing.JPanel;
  *
  */
 
-public class GUI extends JFrame{
+public class GUI extends JFrame implements ActionListener{
 	private static final long serialVersionUID = 1L;
 	private int width=800;
 	private int height=600;
-	JButton test = new JButton("Oh!");
+	JButton rollButton = new JButton("JOGAR DADOS");
+	JButton adminButton = new JButton("ADMINISTRAR PROPRIEDADES");
+	JButton offerButton = new JButton("FAZER OFERTA");
 	JLayeredPane baseLayer = new JLayeredPane();
 	private GUI_PANEL mainPanel = new GUI_PANEL();
 	private GUI_PANEL [] dice = new GUI_PANEL[2];
@@ -48,23 +52,38 @@ public class GUI extends JFrame{
 	}
 	
 	public void loadBoard() {
-			
 		/*Loads the Panel of the Board*/
 		mainPanel.setBackground(Color.darkGray);
-		mainPanel.add(test);
 		mainPanel.setBounds(0, 0, width-8, 400);
 		mainPanel.setOpaque(true);
-		baseLayer.add(mainPanel,9);
+		baseLayer.add(mainPanel, 20);
 		//getContentPane().add(mainPanel,basicLayout.SOUTH,0);
-		
 	}
+	
 	public void loadHudOptions() {
+		// Set buttons
+		rollButton.setActionCommand("roll");
+		rollButton.addActionListener(this);
+		
+		adminButton.setActionCommand("admin");
+		rollButton.addActionListener(this);
+		
+		offerButton.setActionCommand("offer");
+		rollButton.addActionListener(this);
+		
 		hudOptions.setBackground(Color.BLUE);
-		hudOptions.setBounds(0, height-158,width-8, 120);
+		hudOptions.setBounds(0, height-158,width-8, 100);
 		hudOptions.setOpaque(true);
+		
+		// Add buttons
+		hudOptions.add(rollButton);
+		hudOptions.add(adminButton);
+		hudOptions.add(offerButton);		
+		
 		baseLayer.add(hudOptions,2);
 		
 	}
+	
 	public void loadDice(){
 		dice[0] =new GUI_PANEL();
 		dice[1] =new GUI_PANEL();
@@ -78,6 +97,7 @@ public class GUI extends JFrame{
 		baseLayer.add(dice[1],1);
 		
 	}
+	
 	public void loadPlayers(int amount){
 		players[0] = new GUI_PANEL();
 		players[1] = new GUI_PANEL();
@@ -117,22 +137,29 @@ public class GUI extends JFrame{
 			counter++;
 			
 		}
-			
-		
-			
 	}
+	
 	public void unLoadBoard() {
 		getContentPane().remove(0);
 		
 	}
+	
+	/**
+	 * Actions to be performed by clicked buttons in hudOptions
+	 */
+	public void actionPerformed(ActionEvent event) {
+		if("roll".equals(event.getActionCommand())) {
+			rollButton.setEnabled(false);
+		}
+	}
 
 }
- class GUI_PANEL extends JPanel{
- private static final long serialVersionUID = 1L;
+
+class GUI_PANEL extends JPanel{
+	private static final long serialVersionUID = 1L;
  
- public void paintComponent(Graphics g){
-	 super.paintComponent(g);
-	 
+	public void paintComponent(Graphics g){
+		super.paintComponent(g);
  }
 	
 }

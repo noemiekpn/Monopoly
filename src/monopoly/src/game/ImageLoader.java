@@ -45,25 +45,25 @@ public class ImageLoader {
                 if(line.compareTo("# NUMBER OF CHANCE CARDS") == 0) {
                 	line = reader.readLine();
                 	chanceSize = Integer.parseInt(line);
-                	System.out.println(chanceSize);
+                	/*System.out.println(chanceSize);*/
                 }
                 
                 if(line.compareTo("# NUMBER OF COMPANY CARDS") == 0) {
                 	line = reader.readLine();
                 	companySize = Integer.parseInt(line);
-                	System.out.println(companySize);
+                	/*System.out.println(companySize);*/
                 }
 
                 if(line.compareTo("# NUMBER OF TERRAIN CARDS") == 0) {
                 	line = reader.readLine();
                 	terrainSize = Integer.parseInt(line);
-                	System.out.println(terrainSize);
+                	/*System.out.println(terrainSize);*/
                 }
                 
                 if(line.compareTo("# NUMBER OF PINS") == 0) {
                 	line = reader.readLine();
                 	pinSize = Integer.parseInt(line);
-                	System.out.println(pinSize);
+                	/*System.out.println(pinSize);*/
                 }
                 
                 // Populating arrays
@@ -152,9 +152,10 @@ public class ImageLoader {
 	}
 	
 	public void load(File dataFile) {
-		readFile(dataFile);
 		
 		try {
+			readFile(dataFile);
+
 			// Load single images
 			dice1 = ImageIO.read(new File("src/res/dice_sheet.png"));
 			dice2 = ImageIO.read(new File("src/res/dice_sheet.png"));
@@ -189,7 +190,7 @@ public class ImageLoader {
 	
 	/*public static final void main(String[] args) {
 		ImageLoader i = new ImageLoader();
-		File dataFile = new File("Monopoly/src/res/data.config");
+		File dataFile = new File("src/res/data.config");
 		
 		i.load(dataFile);
 	}*/
