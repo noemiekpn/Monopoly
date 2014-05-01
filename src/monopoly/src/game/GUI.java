@@ -38,6 +38,7 @@ public class GUI extends JFrame implements ActionListener{
 	private GUI_PANEL hudOptions = new GUI_PANEL();
 	private GUI_PANEL [] players = new GUI_PANEL[6];
 	private ImageLoader imgData = new ImageLoader();
+	private boolean alreadyRolled = false;
 	
 	public GUI(String screenBarName,int width, int height) {
 		/*Attribution */
@@ -64,9 +65,11 @@ public class GUI extends JFrame implements ActionListener{
 	public void loadBoard() {
 		/*Loads the Panel of the Board*/
 		mainPanel.setBackground(Color.darkGray);
-		mainPanel.setBounds(0, 0, width, 400);
+		mainPanel.setBounds(0, 0, width, height);
 		mainPanel.setOpaque(true);
-		baseLayer.add(mainPanel, 0);
+		mainPanel.setImg(imgData.board, 0);
+		mainPanel.setImgPos(0, 0, 0, width, height);
+		baseLayer.add(mainPanel,new Integer(0), 0);
 		//getContentPane().add(mainPanel,basicLayout.SOUTH,0);
 	}
 	
@@ -82,7 +85,7 @@ public class GUI extends JFrame implements ActionListener{
 		rollButton.addActionListener(this);
 		
 		hudOptions.setBackground(Color.BLUE);
-		hudOptions.setBounds(0, height-158,width-8, 100);
+		hudOptions.setBounds(0, height-83,width, 45);
 		hudOptions.setOpaque(true);
 		
 		// Add buttons
@@ -90,7 +93,7 @@ public class GUI extends JFrame implements ActionListener{
 		hudOptions.add(adminButton);
 		hudOptions.add(offerButton);		
 		
-		baseLayer.add(hudOptions,20);
+		baseLayer.add(hudOptions,new Integer(4), 4);
 		
 	}
 	
@@ -105,10 +108,10 @@ public class GUI extends JFrame implements ActionListener{
 		dice[1].setOpaque(true);
 		dice[0].setImg(imgData.dice1, 1);
 		dice[1].setImg(imgData.dice2, 1);
-		dice[0].setImgPos(0, 0, 0, 100, 100, 0, 0, 100, 100);
-		dice[1].setImgPos(0, 0, 0, 100, 100, 0, 0, 100, 100);
-		baseLayer.add(dice[0],2);
-		baseLayer.add(dice[1],1);
+		dice[0].setImgPos(0, 0, -1, 101, 100, 0, 0, 100, 100);
+		dice[1].setImgPos(0, 0, -1, 101, 100, 0, 0, 100, 100);
+		baseLayer.add(dice[0],new Integer(1),1);
+		baseLayer.add(dice[1],new Integer(2),2);
 		
 	}
 	
@@ -146,24 +149,39 @@ public class GUI extends JFrame implements ActionListener{
 		else if (amount<2)
 			amount=2;
 		while(amount!=0){
-			baseLayer.add(players[counter],3+counter);
+			baseLayer.add(players[counter],new Integer(3),3+counter);
 			amount--;
 			counter++;
 			
 		}
+
 	}
 	
 	public void unLoadBoard() {
 		getContentPane().remove(0);
 		
 	}
-	
+
+	public void  updateDice(int first, int second) {
+		dice[0].setImgPos(0, 0, -1, 101, 100, 600-(100*first), 0, (600-(100*first)+100), 100);
+		dice[1].setImgPos(0, 0, -1, 101, 100, 600-(100*second), 0, (600-(100*second)+100), 100);
+		
+	}
 	/**
 	 * Actions to be performed by clicked buttons in hudOptions
 	 */
 	public void actionPerformed(ActionEvent event) {
 		if("roll".equals(event.getActionCommand())) {
-			rollButton.setEnabled(false);
+			if(!alreadyRolled){
+				//rollButton.setEnabled(false);
+				int first = (new Dice()).roll();
+				int second = (new Dice()).roll();
+				updateDice(first, second);
+				System.out.println("1: "+first+" 2: "+second);
+				getContentPane().repaint();
+				//alreadyRolled=true;
+			}
+			
 		}
 	}
 

@@ -8,6 +8,6 @@ public class Game {
 		mainSreen.loadBoard();
 		mainSreen.loadDice();
 		
-		mainSreen.loadPlayers(2);
+		mainSreen.loadPlayers(6);
 	}
 }
