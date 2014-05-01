@@ -1,16 +1,11 @@
 package monopoly.src.game;
-//import java.awt.image.*;
-//import java.awt.image.BufferedImage;
-//import java.io.File;
-//import java.io.IOException;
 
-//import javax.imageio.ImageIO;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.Toolkit;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
@@ -129,10 +124,103 @@ public class GUI extends JFrame{
 }
  class GUI_PANEL extends JPanel{
  private static final long serialVersionUID = 1L;
+ private int typeOfSet=0;
+ private Image [] displayedImages;
+ private int [] posX;
+ private int [] posY;
+ private int [] width;
+ private int [] height;
+ private int [] dX0;
+ private int [] dY0;
+ private int [] dX1;
+ private int [] dY1;
+ private int [] sX0;
+ private int [] sY0;
+ private int [] sX1;
+ private int [] sY1;
  
- public void paintComponent(Graphics g){
-	 super.paintComponent(g);
-	 
+ public void setImg(Image img, int type) {
+	 displayedImages= new Image[1];
+	 if (type==0){
+		 posX = new int[1];
+		 posY = new int[1];
+		 width = new int[1];
+		 height = new int[1];
+	 }
+	 else if (type==1){
+		dX0 = new int[1];
+		dY0 = new int[1];
+		dX1 = new int[1];
+		dY1 = new int[1];
+		sX0 = new int[1];
+		sY0 = new int[1];
+		sX1 = new int[1];
+		sY1 = new int[1];
+		 
+	 }
+	 displayedImages[0]=img;
+	
+}
+ public void setImg(Image []img, int type){
+	 typeOfSet=type;
+	 displayedImages = new Image[img.length];
+	 if (type==0){
+		 posX = new int[img.length];
+		 posY = new int[img.length];
+		 width = new int[img.length];
+		 height = new int[img.length];
+	 }
+	 else if (type==1){
+		dX0 = new int[img.length];
+		dY0 = new int[img.length];
+		dX1 = new int[img.length];
+		dY1 = new int[img.length];
+		sX0 = new int[img.length];
+		sY0 = new int[img.length];
+		sX1 = new int[img.length];
+		sY1 = new int[img.length];
+		 
+	 }
+	 for(int i=0;i<img.length;i++){
+		 displayedImages[i]=img[i];
+	 }
  }
+ public void setImgPos(int index, int posX, int posY, int width, int height) {
+	 typeOfSet=0;
+	 this.posX[index]= posX;
+	 this.posY[index]= posY;
+	 this.width[index]=width;
+	 this.height[index]=height;
+}
+ public void setImgPos(int index, int dX0, int dY0,int dX1, int dY1,int sX0, int sY0,int sX1, int sY1) {
+	 typeOfSet=1;
+	 this.dX0[index]=dX0;
+	 this.dY0[index]=dY0;
+	 this.dX1[index]=dX1;
+	 this.dY1[index]=dY1;
+	 this.sX0[index]=sX0;
+	 this.sY0[index]=sY0;
+	 this.sX1[index]=sX1;
+	 this.sY1[index]=sY1;
+}
+private void drawImgs1(Graphics g){
+	for(int i=0; i< displayedImages.length;i++){
+		g.drawImage(displayedImages[i], posX[i], posY[i], width[i], height[i], null);
+	}
+}
+private void drawImgs2(Graphics g ) {
+	for(int i=0; i< displayedImages.length;i++){
+		g.drawImage(displayedImages[i], dX0[i],dY0[i],dX1[i],dY1[i],sX0[i],sY0[i],sX1[i],sY1[i],null);
+	}	
+	
+}
+public void paintComponent(Graphics g){
+	 super.paintComponent(g);
+	 if(typeOfSet==0)
+		 drawImgs1(g);
+	 else
+		 drawImgs2(g);
+	 
+}
 	
 }
