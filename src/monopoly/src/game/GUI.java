@@ -28,7 +28,7 @@ public class GUI extends JFrame{
 	JButton test = new JButton("Oh!");
 	JLayeredPane baseLayer = new JLayeredPane();
 	private GUI_PANEL mainPanel = new GUI_PANEL();
-	private GUI_PANEL dice = new GUI_PANEL();
+	private GUI_PANEL [] dice = new GUI_PANEL[2];
 	private GUI_PANEL hudOptions = new GUI_PANEL();
 	private GUI_PANEL [] players = new GUI_PANEL[6];
 	
@@ -62,14 +62,21 @@ public class GUI extends JFrame{
 		hudOptions.setBackground(Color.BLUE);
 		hudOptions.setBounds(0, height-158,width-8, 120);
 		hudOptions.setOpaque(true);
-		baseLayer.add(hudOptions,1);
+		baseLayer.add(hudOptions,2);
 		
 	}
 	public void loadDice(){
-		dice.setBackground(Color.RED);
-		dice.setBounds((width/2)-50, (height/2)-50, 100, 100);
-		dice.setOpaque(true);
-		baseLayer.add(dice,0);
+		dice[0] =new GUI_PANEL();
+		dice[1] =new GUI_PANEL();
+		dice[0].setBackground(Color.BLACK);
+		dice[1].setBackground(Color.WHITE);
+		dice[0].setBounds((width/2)-110, (height/2)-50, 100, 100);
+		dice[1].setBounds((width/2)+10, (height/2)-50, 100, 100);
+		dice[0].setOpaque(true);
+		dice[1].setOpaque(true);
+		baseLayer.add(dice[0],0);
+		baseLayer.add(dice[1],1);
+		
 	}
 	public void loadPlayers(int amount){
 		players[0] = new GUI_PANEL();
@@ -105,7 +112,7 @@ public class GUI extends JFrame{
 		else if (amount<2)
 			amount=2;
 		while(amount!=0){
-			baseLayer.add(players[counter],2+counter);
+			baseLayer.add(players[counter],3+counter);
 			amount--;
 			counter++;
 			
