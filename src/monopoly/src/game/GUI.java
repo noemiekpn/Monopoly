@@ -18,6 +18,8 @@ import javax.swing.JFrame;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+import com.sun.org.apache.regexp.internal.recompile;
+
 /**
  * This class implements all methods related to the Graphic User Interface.
  *
@@ -44,6 +46,8 @@ public class GUI extends JFrame implements ActionListener{
 	private ImageLoader imgData = new ImageLoader();
 	private boolean alreadyRolled = false;
 	private int numPlayers;
+	private Player[] playersThisSession;
+	int whoseTurn = 0;
 	
 	public GUI(String screenBarName,int width, int height) {
 		/*Attribution */
@@ -116,6 +120,8 @@ public class GUI extends JFrame implements ActionListener{
 		mainPanel.setBounds(0, 0, width, height);
 		mainPanel.setOpaque(true);
 		baseLayer.add(mainPanel,new Integer(0), 0);
+		
+
 	}
 	
 	public void loadBoardPositions() {
@@ -175,7 +181,7 @@ public class GUI extends JFrame implements ActionListener{
 		rollButton.addActionListener(this);
 		
 		offerButton.setActionCommand("offer");
-		rollButton.addActionListener(this);
+		offerButton.addActionListener(this);
 
 		hudOptions.setBounds(0, height-83,width, 45);
 		hudOptions.setOpaque(false);
@@ -258,6 +264,15 @@ public class GUI extends JFrame implements ActionListener{
 			amount--;
 			counter++;
 		}		
+		
+		//Players loading
+		playersThisSession = new Player[numPlayers];
+		
+		for(int i = 0; i < numPlayers; i++) {
+			playersThisSession[i] = new Player(i + 1, "Fulano" + (i + 1));
+			System.out.println(playersThisSession[i].name + " is player " + (i + 1));
+		}
+		
 	}
 	
 	public void unLoadBoard() {
@@ -279,7 +294,7 @@ public class GUI extends JFrame implements ActionListener{
 	public void updatePinPosition(int playerID, int numDice1, int numDice2, int space) {
 		// How many spaces to walk
 		int total = numDice1 + numDice2;
-		
+		System.out.print("\n ID "+playerID);
 		// Update pin position in the board
 		mainPanel.setImgPos(playerID, boardPositions[space + total].x, boardPositions[space + total].y);
 		
@@ -298,40 +313,56 @@ public class GUI extends JFrame implements ActionListener{
 				int second = (new Dice()).roll();
 				/*System.out.println("Dice 1: " + first + "Dice 2: " + second);*/
 				updateDice(first, second);
+
 				
-				Player[] players = new Player[numPlayers];
+				System.out.println("It's " + playersThisSession[whoseTurn].name + " turn!");
+				updatePinPosition(playersThisSession[whoseTurn].id, first, second, playersThisSession[whoseTurn].position);
 				
-				for(int i = 0; i < numPlayers; i++) {
-					players[i] = new Player(i + 1, "Fulano" + (i + 1));
-					System.out.println(players[i].name + " is player " + (i + 1));
-				}
-				
-				int whoseTurn = 0;
-				System.out.println("It's " + players[whoseTurn].name + " turn!");
-				updatePinPosition(players[whoseTurn].id, first, second, players[whoseTurn].position);
-				
+				playersThisSession[whoseTurn].position += first+second;
 				/*if(first == second)
 					// If player gets double, can roll again
 					alreadyRolled = false;
 				else {
-					alreadyRolled = true;
+					
 					whoseTurn++;
 				}*/
+				alreadyRolled = true;
 				
 				whoseTurn++;
 				
 				// Reset turn
-				if(whoseTurn > numPlayers)
+				if(whoseTurn == numPlayers)
 					whoseTurn = 0;
 				
 				getContentPane().repaint();
 			}
+
 			
+		}
+		else if ("offer".equals(event.getActionCommand())){
+			alreadyRolled=false;
 		}
 	}
 
 }
-
+class Player {
+	public String name;
+	public int id;
+	public int position;
+	public Player (int id,String name){
+		this.id=id;
+		this.name= name;
+	}
+	public String getName(){
+		return name;
+	}
+	public int getID(){
+		return id;
+	}
+	public int getPOS(){
+		return position;
+	}
+}
 class GUI_PANEL extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private boolean hasImg=false;
