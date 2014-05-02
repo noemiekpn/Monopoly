@@ -2,13 +2,13 @@ package monopoly.src.game;
 
 public class Game {
 	public static void main(String args[]) {
-		GUI mainSreen = new GUI("Minha Tela",1024,768);
-		System.out.print("oi \n");
+		int numPlayers = 3;
 		
-		mainSreen.loadHudOptions();
-		mainSreen.loadBoard();
-		mainSreen.loadPlayers(6);
-	
-		mainSreen.loadBoardPositions();
+		GUI mainScreen = new GUI("Monopoly", 1024, 768);
+		mainScreen.loadHudOptions();
+		mainScreen.loadDice();
+		mainScreen.loadPlayers(numPlayers);
+		mainScreen.loadBoard();
+		mainScreen.loadBoardPositions();
 	}
 }
