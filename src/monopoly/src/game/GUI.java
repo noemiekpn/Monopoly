@@ -15,10 +15,9 @@ import java.io.File;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
-
-import com.sun.org.apache.regexp.internal.recompile;
 
 /**
  * This class implements all methods related to the Graphic User Interface.
@@ -33,20 +32,27 @@ public class GUI extends JFrame implements ActionListener{
 	private final int xL = 206, yL = 58,	// Upper left coordinate of board
 					  xR = 736, yR = 588; 	// Bottom right coordinate board
 	private Point[] boardPositions = new Point[40];
+	private Point[] pinsOffsets = new Point[6];
 	
-	JButton rollButton = new JButton("JOGAR DADOS");
-	JButton adminButton = new JButton("ADMINISTRAR PROPRIEDADES");
-	JButton offerButton = new JButton("FAZER OFERTA");
+	// Panels
 	JLayeredPane baseLayer = new JLayeredPane();
-	
 	private GUI_PANEL mainPanel = new GUI_PANEL();
 	private GUI_PANEL [] dice = new GUI_PANEL[2];
 	private GUI_PANEL hudOptions = new GUI_PANEL();
 	private GUI_PANEL [] players = new GUI_PANEL[6];
 	private ImageLoader imgData = new ImageLoader();
-	private boolean alreadyRolled = false;
+	
+	// Panel elements
+	JButton rollButton = new JButton("JOGAR DADOS");
+	JButton adminButton = new JButton("ADMINISTRAR PROPRIEDADES");
+	JButton offerButton = new JButton("FAZER OFERTA");
+	JButton endTurn = new JButton("FIM DA JOGADA");
+	JLabel[] playersMoney;
+	
+	// Player control
 	private int numPlayers;
 	private Player[] playersThisSession;
+	private boolean alreadyRolled = false;
 	int whoseTurn = 0;
 	
 	public GUI(String screenBarName,int width, int height) {
@@ -73,57 +79,10 @@ public class GUI extends JFrame implements ActionListener{
 			} 
 	}
 	
-	public void loadBoard() {
-		Image[] images = new Image[1 + numPlayers];
-		
-		int counter = 0;
-		int n = numPlayers;
-		
-		// Load board image
-		images[counter] = imgData.board;
-		
-		counter++;
-		// Load pins according to amount of players
-		int	startX = xR + 12,
-			startY = yL + 8;
-		
-		while(n != 0) {
-			images[counter] = imgData.pins[counter - 1];
-			n--;
-			counter++;
-		}
-		
-		// Load entire board panel
-		int index = 0;
-		
-		mainPanel.setImg(images, 0);
-		
-		mainPanel.setImgPos(index, 0, 0);
-		index++;
-		
-		n = numPlayers;
-		while(n != 0) {
-			mainPanel.setImgPos(index, startX, startY);
-			
-			startX += 12;
-			
-			if(n == 4) {
-				startY += 12;
-				startX = xR + 12;
-			}
-			
-			n--;
-			index++;
-		}
-		
-		mainPanel.setBackground(Color.darkGray);
-		mainPanel.setBounds(0, 0, width, height);
-		mainPanel.setOpaque(true);
-		baseLayer.add(mainPanel,new Integer(0), 0);
-		
-
-	}
-	
+	/**
+	 * This methods sets all possible positions of a Monopoly board.
+	 * It also sets up to 6 pins offsets according to these positions and to number of players.
+	 */
 	public void loadBoardPositions() {
 		int i = 0;
 		
@@ -170,6 +129,73 @@ public class GUI extends JFrame implements ActionListener{
 			/*System.out.println("Position " + i + " = " + boardPositions[i]);*/
 			i++;
 		}
+		
+		int n = numPlayers;
+		int offX = 0,
+			offY = -4;
+		while(n != 0) {
+			/*System.out.print("Pin " + (numPlayers - n) + " position = ");*/
+			pinsOffsets[numPlayers - n] = new Point();
+			pinsOffsets[numPlayers - n].x = offX;
+			pinsOffsets[numPlayers - n].y = offY;
+			/*System.out.print(pinsOffsets[numPlayers - n] + "\n");*/
+			
+			offX += 12;
+			
+			if(n == 4) {
+				offY += 12;
+				offX = 0;
+			}
+			
+			n--;
+		}
+	}
+	
+	public void loadBoard() {
+		Image[] images = new Image[1 + numPlayers];
+		
+		int counter = 0;
+		int n = numPlayers;
+		
+		// Load board image
+		images[counter] = imgData.board;
+		counter++;
+		
+		// Load pins images according to amount of players
+		while(n != 0) {
+			images[counter] = imgData.pins[counter - 1];
+			n--;
+			counter++;
+		}
+		
+		// Load all images to panel
+		int index = 0;
+		
+		mainPanel.setImg(images, 0);
+		mainPanel.setImgPos(index, 0, 0);
+		index++;
+		
+		int	startX = xR + 16, startY = yL + 8;
+		n = numPlayers;
+		
+		while(n != 0) {
+			mainPanel.setImgPos(index, startX, startY);
+			
+			startX += 12;
+			
+			if(n == 4) {
+				startY += 12;
+				startX = xR + 16;
+			}
+			
+			n--;
+			index++;
+		}
+		
+		mainPanel.setBackground(Color.darkGray);
+		mainPanel.setBounds(0, 0, width, height);
+		mainPanel.setOpaque(true);
+		baseLayer.add(mainPanel,new Integer(0), 0);
 	}
 	
 	public void loadHudOptions() {
@@ -178,10 +204,14 @@ public class GUI extends JFrame implements ActionListener{
 		rollButton.addActionListener(this);
 		
 		adminButton.setActionCommand("admin");
-		rollButton.addActionListener(this);
+		adminButton.addActionListener(this);
 		
 		offerButton.setActionCommand("offer");
 		offerButton.addActionListener(this);
+		
+		endTurn.setActionCommand("end");
+		endTurn.addActionListener(this);
+		endTurn.setEnabled(false);
 
 		hudOptions.setBounds(0, height-83,width, 45);
 		hudOptions.setOpaque(false);
@@ -192,7 +222,8 @@ public class GUI extends JFrame implements ActionListener{
 		// Add buttons
 		hudOptions.add(rollButton);
 		hudOptions.add(adminButton);
-		hudOptions.add(offerButton);		
+		hudOptions.add(offerButton);
+		hudOptions.add(endTurn);
 		
 		baseLayer.add(hudOptions,new Integer(4), 4);
 		
@@ -220,25 +251,18 @@ public class GUI extends JFrame implements ActionListener{
 	public void loadPlayers(int amount){
 		numPlayers = amount;
 		
-		players[0] = new GUI_PANEL();
-		players[1] = new GUI_PANEL();
-		players[2] = new GUI_PANEL();
-		players[3] = new GUI_PANEL();
-		players[4] = new GUI_PANEL();
-		players[5] = new GUI_PANEL();
+		for(int i = 0; i < players.length; i++) {
+			players[i] = new GUI_PANEL();
+			players[i].setOpaque(true);
+			players[i].setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
+		}
 		
 		players[0].setBackground(new Color(34, 34, 34));
-		players[0].setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
 		players[1].setBackground(new Color(0, 113, 188));
-		players[1].setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
 		players[2].setBackground(new Color(227, 135, 28));
-		players[2].setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
 		players[3].setBackground(new Color(94, 59, 120));
-		players[3].setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
 		players[4].setBackground(new Color(193, 39, 45));
-		players[4].setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
 		players[5].setBackground(new Color(252, 241, 86));
-		players[5].setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0)));
 		
 		players[0].setBounds(0  , 124, 166, 65);
 		players[1].setBounds(858, 124, 166, 65);
@@ -247,13 +271,6 @@ public class GUI extends JFrame implements ActionListener{
 		players[4].setBounds(0  , 543, 166, 65);
 		players[5].setBounds(858, 543, 166, 65);
 
-		players[0].setOpaque(true);
-		players[1].setOpaque(true);
-		players[2].setOpaque(true);
-		players[3].setOpaque(true);
-		players[4].setOpaque(true);
-		players[5].setOpaque(true);
-		
 		int counter = 0;
 		if (amount>6)
 			amount=6;
@@ -265,13 +282,23 @@ public class GUI extends JFrame implements ActionListener{
 			counter++;
 		}		
 		
-		//Players loading
+		// Players loading
 		playersThisSession = new Player[numPlayers];
 		
 		for(int i = 0; i < numPlayers; i++) {
-			playersThisSession[i] = new Player(i + 1, "Fulano" + (i + 1));
-			System.out.println(playersThisSession[i].name + " is player " + (i + 1));
+			playersThisSession[i] = new Player(i + 1, "Jogador " + (i + 1));
+			System.out.println(playersThisSession[i].getName() + " is player " + (i + 1));
 		}
+
+		/*// Display players initial money amount
+		JLabel[] playersMoney = new JLabel[numPlayers];
+		
+		for(int i = 0; i < numPlayers; i++) {
+			// 8 * 1 + 10 * 5 + 10 * 10 + 10 * 50 + 8 * 100 + 2 * 500
+			playersMoney[i].setText(Integer.toString(100));
+			playersMoney[i].setForeground(new Color(255, 255, 255));
+			players[i].add(playersMoney[i]);
+		}*/
 		
 	}
 	
@@ -286,83 +313,90 @@ public class GUI extends JFrame implements ActionListener{
 	
 	/**
 	 * This function will update the pin position in the board after the player has rolled the dices.
-	 * @param playerIndex - Determines which player has rolled the dices.
+	 * @param playerID - Determines which player has rolled the dices.
 	 * @param numDice1 - Determines how much dice 1 rolled.
 	 * @param numDice2 - Determines how much dice 2 rolled.
-	 * @param space - Determines where the player is at in the board.
 	 */
-	public void updatePinPosition(int playerID, int numDice1, int numDice2, int space) {
+	public void updatePlayerPinPosition(int playerID, int numDice1, int numDice2) {
 		// How many spaces to walk
 		int total = numDice1 + numDice2;
-		System.out.print("\n ID "+playerID);
+		int newPos = playersThisSession[playerID - 1].getPosition() + total;
+		
+		// Check if new position must loop
+		if(newPos >= boardPositions.length) {
+			System.out.println("New position was: " + newPos);
+			newPos = newPos - boardPositions.length;
+			System.out.println("New is now: " + newPos);
+		}
+		
 		// Update pin position in the board
-		mainPanel.setImgPos(playerID, boardPositions[space + total].x, boardPositions[space + total].y);
+		mainPanel.setImgPos(playerID, boardPositions[newPos].x + pinsOffsets[playerID - 1].x, boardPositions[newPos].y + pinsOffsets[playerID - 1].y);
 		
 		// Update where player is at in the board
-		space = space + total;
+		System.out.print("Player " + playerID + " was moved from position " + playersThisSession[playerID - 1].getPosition());
+		playersThisSession[playerID -1].setPosition(newPos) ;
+		System.out.print(" to position " + newPos + "\n");
+
 	}
 
-	/**
-	 * Actions to be performed by clicked buttons in hudOptions
-	 */
 	public void actionPerformed(ActionEvent event) {
 		if("roll".equals(event.getActionCommand())) {
 			if(!alreadyRolled){
-				//rollButton.setEnabled(false);
 				int first = (new Dice()).roll();
 				int second = (new Dice()).roll();
-				/*System.out.println("Dice 1: " + first + "Dice 2: " + second);*/
+				
+				System.out.print("Dice 1: " + first + "\tDice 2: " + second);
 				updateDice(first, second);
 
 				
-				System.out.println("It's " + playersThisSession[whoseTurn].name + " turn!");
-				updatePinPosition(playersThisSession[whoseTurn].id, first, second, playersThisSession[whoseTurn].position);
+				System.out.println("It's " + playersThisSession[whoseTurn].getName() + " turn!");
+				updatePlayerPinPosition(playersThisSession[whoseTurn].getID(), first, second);
 				
-				playersThisSession[whoseTurn].position += first+second;
-				/*if(first == second)
-					// If player gets double, can roll again
-					alreadyRolled = false;
-				else {
+				// If player rolls doubles, can roll again
+				if(first == second) {
+					playersThisSession[whoseTurn].incrementDoublesCounter();
+					System.out.println("Player rolled doubles " + playersThisSession[whoseTurn].getDoublesCounter() + " times!");
 					
+					// If player rolls doubles 3 times, goes to jail
+					if(playersThisSession[whoseTurn].getDoublesCounter() == 3) {
+						playersThisSession[whoseTurn].resetDoublesCounter();
+						
+						rollButton.setEnabled(false);
+						endTurn.setEnabled(true);
+						
+						alreadyRolled = true;
+						whoseTurn++;
+					} else {						
+						alreadyRolled = false;
+					}
+				} else {
+					rollButton.setEnabled(false);
+					endTurn.setEnabled(true);
+										
+					alreadyRolled = true;
 					whoseTurn++;
-				}*/
-				alreadyRolled = true;
-				
-				whoseTurn++;
-				
+				}
+								
 				// Reset turn
 				if(whoseTurn == numPlayers)
 					whoseTurn = 0;
+				System.out.println("Next is " + playersThisSession[whoseTurn].getName());
 				
 				getContentPane().repaint();
 			}
 
 			
 		}
-		else if ("offer".equals(event.getActionCommand())){
-			alreadyRolled=false;
+		else if ("end".equals(event.getActionCommand())){
+			rollButton.setEnabled(true);
+			endTurn.setEnabled(false);
+			
+			alreadyRolled = false;
 		}
 	}
 
 }
-class Player {
-	public String name;
-	public int id;
-	public int position;
-	public Player (int id,String name){
-		this.id=id;
-		this.name= name;
-	}
-	public String getName(){
-		return name;
-	}
-	public int getID(){
-		return id;
-	}
-	public int getPOS(){
-		return position;
-	}
-}
+
 class GUI_PANEL extends JPanel{
 	private static final long serialVersionUID = 1L;
 	private boolean hasImg=false;
