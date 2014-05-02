@@ -8,7 +8,7 @@ public class Game {
 		mainSreen.loadHudOptions();
 		mainSreen.loadBoard();
 		mainSreen.loadPlayers(6);
-	
+		mainSreen.loadDice();
 		mainSreen.loadBoardPositions();
 	}
 }
