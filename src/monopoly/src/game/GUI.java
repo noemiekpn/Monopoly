@@ -3,6 +3,7 @@ package monopoly.src.game;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
@@ -14,9 +15,11 @@ import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -47,13 +50,17 @@ public class GUI extends JFrame implements ActionListener{
 	JButton adminButton = new JButton("ADMINISTRAR PROPRIEDADES");
 	JButton offerButton = new JButton("FAZER OFERTA");
 	JButton endTurn = new JButton("FIM DA JOGADA");
-	JLabel[] playersMoney;
+	JLabel[] playersMoney = new JLabel[6];
+	
+	JDialog dialog = new JDialog();
 	
 	// Player control
 	private int numPlayers;
 	private Player[] playersThisSession;
 	private boolean alreadyRolled = false;
 	int whoseTurn = 0;
+	
+	/********************************************************************************/
 	
 	public GUI(String screenBarName,int width, int height) {
 		/*Attribution */
@@ -229,7 +236,7 @@ public class GUI extends JFrame implements ActionListener{
 		
 	}
 	
-	public void loadDice(){
+	public void loadDice() {
 		dice[0] =new GUI_PANEL();
 		dice[1] =new GUI_PANEL();
 		dice[0].setBackground(Color.BLACK);
@@ -248,7 +255,7 @@ public class GUI extends JFrame implements ActionListener{
 		
 	}
 	
-	public void loadPlayers(int amount){
+	public void loadPlayers(int amount) {
 		numPlayers = amount;
 		
 		for(int i = 0; i < players.length; i++) {
@@ -270,7 +277,19 @@ public class GUI extends JFrame implements ActionListener{
 		players[3].setBounds(858, 334, 166, 65);
 		players[4].setBounds(0  , 543, 166, 65);
 		players[5].setBounds(858, 543, 166, 65);
-
+		
+		// Display players initial money amount
+		for(int i = 0; i < numPlayers; i++) {
+			// 8 * 1 + 10 * 5 + 10 * 10 + 10 * 50 + 8 * 100 + 2 * 500
+			playersMoney[i] = new JLabel("", JLabel.CENTER);
+			playersMoney[i].setOpaque(false);
+			playersMoney[i].setFont(new Font("arial", Font.BOLD, 20));
+			playersMoney[i].setText("$ " + Integer.toString(8 * 1 + 10 * 5 + 10 * 10 + 10 * 50 + 8 * 100 + 2 * 500));
+			playersMoney[i].setVerticalTextPosition(JLabel.BOTTOM);
+			playersMoney[i].setForeground(new Color(255, 255, 255));
+			players[i].add(playersMoney[i]);
+		}
+		
 		int counter = 0;
 		if (amount>6)
 			amount=6;
@@ -290,15 +309,6 @@ public class GUI extends JFrame implements ActionListener{
 			System.out.println(playersThisSession[i].getName() + " is player " + (i + 1));
 		}
 
-		/*// Display players initial money amount
-		JLabel[] playersMoney = new JLabel[numPlayers];
-		
-		for(int i = 0; i < numPlayers; i++) {
-			// 8 * 1 + 10 * 5 + 10 * 10 + 10 * 50 + 8 * 100 + 2 * 500
-			playersMoney[i].setText(Integer.toString(100));
-			playersMoney[i].setForeground(new Color(255, 255, 255));
-			players[i].add(playersMoney[i]);
-		}*/
 		
 	}
 	
@@ -339,6 +349,16 @@ public class GUI extends JFrame implements ActionListener{
 
 	}
 
+	public void showHouseLimitDialog(){
+		final JOptionPane p = new JOptionPane("You already have 4 houses here.\n" + 
+		" Do you want to buy a hotel instead?",
+		JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
+	}
+	
+	public void showHotelLimitDialog(){
+		final JOptionPane p = new JOptionPane("You already have 4 hotels here.\n");
+	}
+	
 	public void actionPerformed(ActionEvent event) {
 		if("roll".equals(event.getActionCommand())) {
 			if(!alreadyRolled){
@@ -397,7 +417,7 @@ public class GUI extends JFrame implements ActionListener{
 
 }
 
-class GUI_PANEL extends JPanel{
+class GUI_PANEL extends JPanel {
 	private static final long serialVersionUID = 1L;
 	private boolean hasImg=false;
 	private int typeOfSet=0;			// (0) Full or (1) cropped image

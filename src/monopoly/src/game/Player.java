@@ -41,5 +41,15 @@ public class Player {
 	public void resetDoublesCounter(){
 		doublesCounter = 0;
 	}
+	
+	public void buyProperty(Property p) {
+		
+	}
+	
+	public void sellProperty() {
+		
+	}
+
 }
+
 
