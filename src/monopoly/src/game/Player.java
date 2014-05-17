@@ -5,7 +5,7 @@ public class Player {
 	private int money;
 	private int position;	// In terms of spaces
 	private String name;
-	
+	private boolean isReceiving = true;
 	private int doublesCounter;
 	
 	public Player(int playerID, String playerName) {
@@ -63,6 +63,13 @@ public class Player {
 	
 	public void sellProperty() {
 		
+	}
+	public void setReceiving(boolean value){
+		isReceiving =value;
+	}
+	public boolean getReceiving (){
+		
+		return isReceiving;
 	}
 
 }

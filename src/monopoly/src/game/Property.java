@@ -20,7 +20,7 @@ abstract class Property {
 		this.mortgage = mortgage;
 		this.location = location;
 	}
-	
+		
 	public String getPropertyName() {
 		return name;
 	}
@@ -31,14 +31,6 @@ abstract class Property {
 
 	public int getPropertyMortgage() {
 		return mortgage;
-	}
-	
-	public int getPropertyRent() {
-		return rent;
-	}
-	
-	public void setPropertyRent(int rent) {
-		this.rent = rent;
 	}
 	
 	public int getPropertyOwnerID() {
