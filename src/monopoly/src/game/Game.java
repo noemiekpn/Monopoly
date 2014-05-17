@@ -10,5 +10,6 @@ public class Game {
 		mainScreen.loadPlayers(numPlayers);
 		mainScreen.loadBoard();
 		mainScreen.loadBoardPositions();
+		mainScreen.loadInfo();
 	}
 }

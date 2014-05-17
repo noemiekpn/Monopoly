@@ -12,7 +12,6 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -41,8 +40,9 @@ public class GUI extends JFrame implements ActionListener {
 	private GUI_PANEL[] dice = new GUI_PANEL[2];
 	private GUI_PANEL hudOptions = new GUI_PANEL();
 	private GUI_PANEL[] players = new GUI_PANEL[6];
-	private CardLoader imgData = new CardLoader();
+	private GUI_PANEL  info = new GUI_PANEL();
 	
+	private CardLoader cardData = new CardLoader();
 	// Panel elements
 	JButton rollButton = new JButton("JOGAR DADOS");
 	JButton adminButton = new JButton("ADMINISTRAR PROPRIEDADES");
@@ -61,6 +61,12 @@ public class GUI extends JFrame implements ActionListener {
 	private Property properties[] = new Property[36];
 	private boolean alreadyRolled = false;
 	int whoseTurn = 0;
+	
+	/** Layer index control*/
+	 enum layerIndex{
+		 MAINPANEL, HUDOPTIONS, DICE1, DICE2, INFO, PLAYER
+	}
+	
 	
 	// Cards
 	/********************************************************************************/
@@ -84,7 +90,7 @@ public class GUI extends JFrame implements ActionListener {
 		File dataConfig;
 		try {
 			dataConfig = new File("src/res/data.config");
-			imgData.load(dataConfig);
+			cardData.load(dataConfig);
 		}
 		catch(Exception e) {	
 			e.printStackTrace();
@@ -171,12 +177,12 @@ public class GUI extends JFrame implements ActionListener {
 		int n = playersThisSession.length;
 		
 		// Load board image
-		images[counter] = imgData.board;
+		images[counter] = cardData.board;
 		counter++;
 		
 		// Load pins images according to amount of players
 		while(n != 0) {
-			images[counter] = imgData.pins[counter - 1];
+			images[counter] = cardData.pins[counter - 1];
 			n--;
 			counter++;
 		}
@@ -208,7 +214,7 @@ public class GUI extends JFrame implements ActionListener {
 		mainPanel.setBackground(Color.darkGray);
 		mainPanel.setBounds(0, 0, width, height);
 		mainPanel.setOpaque(true);
-		baseLayer.add(mainPanel,new Integer(0), 0);
+		baseLayer.add(mainPanel,new Integer(0), layerIndex.MAINPANEL.ordinal());
 	}
 	
 	public void loadHudOptions() {
@@ -235,10 +241,17 @@ public class GUI extends JFrame implements ActionListener {
 		hudOptions.add(offerButton);
 		hudOptions.add(endTurn);
 		
-		baseLayer.add(hudOptions,new Integer(4), 4);
+		baseLayer.add(hudOptions,new Integer(layerIndex.HUDOPTIONS.ordinal()), layerIndex.HUDOPTIONS.ordinal());//4
 		
 	}
 	
+	public void loadInfo() {
+		info.setBackground(Color.orange);
+		info.setBounds(287, 139, 449, 449);
+		info.setVisible(false);
+		baseLayer.add(info, new Integer(layerIndex.INFO.ordinal()),layerIndex.INFO.ordinal());
+		
+	}
 	public void loadDice() {
 		dice[0] =new GUI_PANEL();
 		dice[1] =new GUI_PANEL();
@@ -249,12 +262,12 @@ public class GUI extends JFrame implements ActionListener {
 		dice[1].setBounds((width/2)+10, (height/2)-50, 100, 100);
 		dice[0].setOpaque(true);
 		dice[1].setOpaque(true);
-		dice[0].setImg(imgData.dice1, 1);
-		dice[1].setImg(imgData.dice2, 1);
+		dice[0].setImg(cardData.dice1, 1);
+		dice[1].setImg(cardData.dice2, 1);
 		dice[0].setImgPos(0, 0, -1, 101, 100, 0, 0, 100, 100);
 		dice[1].setImgPos(0, 0, -1, 101, 100, 0, 0, 100, 100);
-		baseLayer.add(dice[0],new Integer(1),1);
-		baseLayer.add(dice[1],new Integer(2),2);
+		baseLayer.add(dice[0],new Integer(layerIndex.DICE1.ordinal()),layerIndex.DICE1.ordinal());
+		baseLayer.add(dice[1],new Integer(layerIndex.DICE1.ordinal()),layerIndex.DICE2.ordinal());
 		
 	}
 	
@@ -357,27 +370,34 @@ public class GUI extends JFrame implements ActionListener {
 	public void cardDisplay(int playerID) {
 		// Player's current position will be the card's on board.
 		int curPos = playersThisSession[playerID - 1].getPosition();
-		
+		int card;
 		/* Check if it is one of the corner positions*/
 		if (curPos==0){
-			
+			// do something 
+			return;
 		}
 		else if(curPos==10){
-			
+			// do something 
+			return;
 		}
 		else if (curPos==20) {
-			
+			// do something 
+			return;
 		}
 		else if (curPos==30) {
-			
+			// do something 
+			return;
 		}
 		
 		// Check if position has a card
-		 for(int i=0;i< properties.length;i++){
-			 if(properties[i].getLocation() == curPos){
+		 for(card=0;card< properties.length;card++){
+			 if(properties[card].getLocation() == curPos){
 				 break;
 			 }
 		 }
+		 properties[card].drawCard(info);
+		 //Buttons of options for this property must be created here
+		 //Consult properties[card] for info needed
 	}
 	
 	public void actionPerformed(ActionEvent event) {
@@ -455,7 +475,7 @@ class GUI_PANEL extends JPanel {
 	private int [] sY0;
 	private int [] sX1;
 	private int [] sY1;
-
+	/** Add image; Type 1 for able to crop ou 1 for not */
 	public void setImg(Image img, int type) {
 		 hasImg=true;
 		 displayedImages= new Image[1];
@@ -479,6 +499,8 @@ class GUI_PANEL extends JPanel {
 		 displayedImages[0]=img;
 		
 	}
+
+	/** Add vector of images; Type 1 for able to crop ou 1 for not */
 	public void setImg(Image []img, int type){
 		 hasImg=true;
 		 typeOfSet=type;
@@ -504,6 +526,8 @@ class GUI_PANEL extends JPanel {
 			 displayedImages[i]=img[i];
 		 }
 	}
+	
+	/**Index is the index of the Array of Images, type 0 if Array not used*/
 	public void setImgPos(int index, int posX, int posY/*, int width, int height*/) {
 		 typeOfSet=0;
 		 this.posX[index]= posX;
@@ -511,6 +535,8 @@ class GUI_PANEL extends JPanel {
 		 /*this.width[index]=width;
 		 this.height[index]=height;*/
 	}
+	/**Index is the index of the Array of Images, type 0 if Array not used*/
+	
 	public void setImgPos(int index, int dX0, int dY0,int dX1, int dY1,int sX0, int sY0,int sX1, int sY1) {
 		 typeOfSet=1;
 		 this.dX0[index]=dX0;
@@ -522,6 +548,7 @@ class GUI_PANEL extends JPanel {
 		 this.sX1[index]=sX1;
 		 this.sY1[index]=sY1;
 	}
+	
 	private void drawImgs1(Graphics g){
 		Graphics2D g2d = (Graphics2D) g;
 		
@@ -529,6 +556,7 @@ class GUI_PANEL extends JPanel {
 			g2d.drawImage(displayedImages[i], posX[i], posY[i], null);
 		}
 	}
+	
 	private void drawImgs2(Graphics g ) {
 		Graphics2D g2d = (Graphics2D) g;
 		
@@ -537,6 +565,7 @@ class GUI_PANEL extends JPanel {
 		}	
 		
 	}
+	
 	public void paintComponent(Graphics g){
 		 super.paintComponent(g);
 		 if (hasImg){
@@ -548,3 +577,5 @@ class GUI_PANEL extends JPanel {
 	}
 	
 }
+
+

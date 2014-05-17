@@ -1,13 +1,13 @@
 package monopoly.src.game;
-
+import java.awt.Image;
 import javax.swing.JOptionPane;
 
 public class Terrain extends Property {
 	private int numHouses = 0;
 	private int numHotels = 0;
     private Integer rentWithConstruction[];
-	public Terrain(String name, int price, int rent, int mortgage, int location) {
-		super(name, price, rent, mortgage, location);
+	public Terrain(String name, int price, int rent, int mortgage, int location, Image img) {
+		super(name, price, rent, mortgage, location, img);
 	}
 	
 	public void addHouses(int numHouses) {

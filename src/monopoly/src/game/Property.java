@@ -1,4 +1,6 @@
 package monopoly.src.game;
+import java.awt.Image;
+
 import monopoly.src.game.Player;
 abstract class Property {
 
@@ -11,8 +13,9 @@ abstract class Property {
 	protected final int price;
 	protected int rent;
 	protected final int mortgage;
+	protected final Image img;
 	
-	public Property(String name, int price, int rent, int mortgage, int location) {
+	public Property(String name, int price, int rent, int mortgage, int location, Image img) {
 		ownerID =null;	// All properties belong to the bank at beginning
 		
 		this.name = name;
@@ -20,6 +23,7 @@ abstract class Property {
 		this.rent = rent;
 		this.mortgage = mortgage;
 		this.location = location;
+		this.img=img;
 	}
 	/**Tells the property'name*/	
 	public String getPropertyName() {
@@ -44,5 +48,12 @@ abstract class Property {
 	/**Returns the property location inside of the table*/
 	public int getLocation(){
 		return location;
+	}
+	public void drawCard(GUI_PANEL Pane){
+		Pane.removeAll();
+		Pane.setImg(img, 0);
+		Pane.setImgPos(0, 0, 0);
+		
+		
 	}
 }
