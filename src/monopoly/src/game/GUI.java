@@ -41,7 +41,7 @@ public class GUI extends JFrame implements ActionListener {
 	private GUI_PANEL[] dice = new GUI_PANEL[2];
 	private GUI_PANEL hudOptions = new GUI_PANEL();
 	private GUI_PANEL[] players = new GUI_PANEL[6];
-	private ImageLoader imgData = new ImageLoader();
+	private CardLoader imgData = new CardLoader();
 	
 	// Panel elements
 	JButton rollButton = new JButton("JOGAR DADOS");
@@ -56,8 +56,9 @@ public class GUI extends JFrame implements ActionListener {
 	JLabel[] playersMoney = new JLabel[6];
 	
 	// Player control
-	private int numPlayers;
+	//private int numPlayers; esqueceu que existe .lenght?
 	private Player[] playersThisSession;
+	private Property properties[] = new Property[36];
 	private boolean alreadyRolled = false;
 	int whoseTurn = 0;
 	
@@ -68,7 +69,6 @@ public class GUI extends JFrame implements ActionListener {
 		/*Attribution */
 		this.width = width;
 		this.height = height;
-		
 		/* Default Construction*/
 		Toolkit userConfig = Toolkit.getDefaultToolkit();
 		Dimension userScreenResolution = userConfig.getScreenSize();
@@ -142,7 +142,8 @@ public class GUI extends JFrame implements ActionListener {
 			i++;
 		}
 		
-		int n = numPlayers;
+		int n = playersThisSession.length;
+		int numPlayers = playersThisSession.length;
 		int offX = 0,
 			offY = -4;
 		while(n != 0) {
@@ -164,10 +165,10 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	public void loadBoard() {
-		Image[] images = new Image[1 + numPlayers];
+		Image[] images = new Image[1 + playersThisSession.length];
 		
 		int counter = 0;
-		int n = numPlayers;
+		int n = playersThisSession.length;
 		
 		// Load board image
 		images[counter] = imgData.board;
@@ -188,7 +189,7 @@ public class GUI extends JFrame implements ActionListener {
 		index++;
 		
 		int	startX = xR + 16, startY = yL + 8;
-		n = numPlayers;
+		n = playersThisSession.length;
 		
 		while(n != 0) {
 			mainPanel.setImgPos(index, startX, startY);
@@ -258,7 +259,7 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	public void loadPlayers(int amount) {
-		numPlayers = amount;
+		//numPlayers = amount;
 		
 		for(int i = 0; i < players.length; i++) {
 			players[i] = new GUI_PANEL();
@@ -280,6 +281,8 @@ public class GUI extends JFrame implements ActionListener {
 		players[4].setBounds(0  , 543, 166, 65);
 		players[5].setBounds(858, 543, 166, 65);
 		
+		// Players loading
+		playersThisSession = new Player[amount];
 		
 		int counter = 0;
 		if (amount>6)
@@ -292,16 +295,14 @@ public class GUI extends JFrame implements ActionListener {
 			counter++;
 		}		
 		
-		// Players loading
-		playersThisSession = new Player[numPlayers];
 		
-		for(int i = 0; i < numPlayers; i++) {
+		for(int i = 0; i < playersThisSession.length; i++) {
 			playersThisSession[i] = new Player(i + 1, "Jogador " + (i + 1));
 			System.out.println(playersThisSession[i].getName() + " is player " + (i + 1));
 		}
 
 		// Display players initial money amount
-		for(int i = 0; i < numPlayers; i++) {
+		for(int i = 0; i < playersThisSession.length; i++) {
 			playersMoney[i] = new JLabel("", JLabel.CENTER);
 			playersMoney[i].setOpaque(false);
 			playersMoney[i].setFont(new Font("arial", Font.BOLD, 20));
@@ -357,8 +358,26 @@ public class GUI extends JFrame implements ActionListener {
 		// Player's current position will be the card's on board.
 		int curPos = playersThisSession[playerID - 1].getPosition();
 		
-		// Check if position has a card
+		/* Check if it is one of the corner positions*/
+		if (curPos==0){
+			
+		}
+		else if(curPos==10){
+			
+		}
+		else if (curPos==20) {
+			
+		}
+		else if (curPos==30) {
+			
+		}
 		
+		// Check if position has a card
+		 for(int i=0;i< properties.length;i++){
+			 if(properties[i].getLocation() == curPos){
+				 break;
+			 }
+		 }
 	}
 	
 	public void actionPerformed(ActionEvent event) {
@@ -400,7 +419,7 @@ public class GUI extends JFrame implements ActionListener {
 				}
 								
 				// Reset turn
-				if(whoseTurn == numPlayers)
+				if(whoseTurn == playersThisSession.length)
 					whoseTurn = 0;
 				System.out.println("Next is " + playersThisSession[whoseTurn].getName());
 				

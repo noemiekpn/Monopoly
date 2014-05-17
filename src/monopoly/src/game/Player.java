@@ -24,19 +24,19 @@ public class Player {
 	public int getID(){
 		return id;
 	}
-	
+	/** tells player's balance */
 	public int getMoney() {
 		return money;
 	}
-	
+	/**Add money to players' wallet*/
 	public void addMoney(int plusAmount) {
 		money += plusAmount;
 	}
-	
+	/**Subtract player's money */
 	public void chargeMoney(int minusAmount) {
 		money -= minusAmount;
 	}
-	
+	/** returns the position of the pin's player in terms of the blocks*/
 	public int getPosition(){
 		return position;
 	}
@@ -58,15 +58,17 @@ public class Player {
 	}
 	
 	public void buyProperty(Property p) {
-		p.ownerID = id;
+		p.setPropertyOwner(this);
 	}
 	
 	public void sellProperty() {
 		
 	}
+	/**Set whether player can receive money or not*/
 	public void setReceiving(boolean value){
 		isReceiving =value;
 	}
+	/**Tells whether player can receive money or not*/
 	public boolean getReceiving (){
 		
 		return isReceiving;

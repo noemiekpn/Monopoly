@@ -21,24 +21,28 @@ abstract class Property {
 		this.mortgage = mortgage;
 		this.location = location;
 	}
-		
+	/**Tells the property'name*/	
 	public String getPropertyName() {
 		return name;
 	}
-	
+	/**Returns the buying price */
 	public int getPropertyPrice() {
 		return price;
 	}
-
+     /**Returns the mortgage's price  */
 	public int getPropertyMortgage() {
 		return mortgage;
 	}
-	
+	/**Tells who's the owner */
 	public Player getPropertyOwnerID() {
 		return null;
 	}
-	
+	/**Set new ownership */
 	public void setPropertyOwner(Player ownerID) {
 		this.ownerID = ownerID;
+	}
+	/**Returns the property location inside of the table*/
+	public int getLocation(){
+		return location;
 	}
 }
