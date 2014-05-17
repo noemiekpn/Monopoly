@@ -1,7 +1,8 @@
 package monopoly.src.game;
-
+import monopoly.src.game.Player;
 abstract class Property {
-	protected int ownerID;
+
+	protected Player ownerID;
 	
 	protected final int location; 	// Position in board
 	
@@ -12,7 +13,7 @@ abstract class Property {
 	protected final int mortgage;
 	
 	public Property(String name, int price, int rent, int mortgage, int location) {
-		ownerID = -1;	// All properties belong to the bank at beginning
+		ownerID =null;	// All properties belong to the bank at beginning
 		
 		this.name = name;
 		this.price = price;
@@ -33,11 +34,11 @@ abstract class Property {
 		return mortgage;
 	}
 	
-	public int getPropertyOwnerID() {
-		return ownerID;
+	public Player getPropertyOwnerID() {
+		return null;
 	}
 	
-	public void setPropertyOwner(int ownerID) {
+	public void setPropertyOwner(Player ownerID) {
 		this.ownerID = ownerID;
 	}
 }

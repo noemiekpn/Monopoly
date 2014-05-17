@@ -1,7 +1,5 @@
 package monopoly.src.game;
 
-import java.security.acl.Owner;
-
 public class Company extends Property {
 	
 	public Company(String name, int price, int rent, int mortgage, int location) {
