@@ -15,34 +15,32 @@ import java.io.File;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
  * This class implements all methods related to the Graphic User Interface.
  *
  */
-
-public class GUI extends JFrame implements ActionListener{
+public class GUI extends JFrame implements ActionListener {
 	private static final long serialVersionUID = 1L;
-	private int width=800;
-	private int height=600;
+	private final int width;
+	private final int height;
 	
+	// Board
 	private final int xL = 206, yL = 58,	// Upper left coordinate of board
 					  xR = 736, yR = 588; 	// Bottom right coordinate board
-	private Point[] boardPositions = new Point[40];
+	private Point[] boardPositions = new Point[40];		// In term of pixels
 	private Point[] pinsOffsets = new Point[6];
 	
 	// Panels
 	JLayeredPane baseLayer = new JLayeredPane();
 	private GUI_PANEL mainPanel = new GUI_PANEL();
-	private GUI_PANEL [] dice = new GUI_PANEL[2];
+	private GUI_PANEL[] dice = new GUI_PANEL[2];
 	private GUI_PANEL hudOptions = new GUI_PANEL();
-	private GUI_PANEL [] players = new GUI_PANEL[6];
+	private GUI_PANEL[] players = new GUI_PANEL[6];
 	private ImageLoader imgData = new ImageLoader();
 	
 	// Panel elements
@@ -50,9 +48,12 @@ public class GUI extends JFrame implements ActionListener{
 	JButton adminButton = new JButton("ADMINISTRAR PROPRIEDADES");
 	JButton offerButton = new JButton("FAZER OFERTA");
 	JButton endTurn = new JButton("FIM DA JOGADA");
+
+	JButton pass = new JButton("PASSAR VEZ");
+	JButton buy = new JButton("COMPRAR");
+	JButton admin = new JButton("ADMINISTRAR");
+	JButton exchange = new JButton("TROCAR");
 	JLabel[] playersMoney = new JLabel[6];
-	
-	JDialog dialog = new JDialog();
 	
 	// Player control
 	private int numPlayers;
@@ -60,17 +61,21 @@ public class GUI extends JFrame implements ActionListener{
 	private boolean alreadyRolled = false;
 	int whoseTurn = 0;
 	
+	// Cards
 	/********************************************************************************/
 	
-	public GUI(String screenBarName,int width, int height) {
+	public GUI(String screenBarName, int width, int height) {
 		/*Attribution */
-		this.width=width;
-		this.height=height;
+		this.width = width;
+		this.height = height;
+		
 		/* Default Construction*/
 		Toolkit userConfig = Toolkit.getDefaultToolkit();
 		Dimension userScreenResolution = userConfig.getScreenSize();
+		
 		setBounds(((userScreenResolution.width)/2)-(width/2),((userScreenResolution.height)/2)-(height/2), width, height);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		
 		setResizable(false);
 		setTitle(screenBarName);
 		setVisible(true);
@@ -78,12 +83,12 @@ public class GUI extends JFrame implements ActionListener{
 		
 		File dataConfig;
 		try {
-				dataConfig= new File("src/res/data.config");
-				imgData.load(dataConfig);
-			}
+			dataConfig = new File("src/res/data.config");
+			imgData.load(dataConfig);
+		}
 		catch(Exception e) {	
-				e.printStackTrace();
-			} 
+			e.printStackTrace();
+		} 
 	}
 	
 	/**
@@ -222,9 +227,6 @@ public class GUI extends JFrame implements ActionListener{
 
 		hudOptions.setBounds(0, height-83,width, 45);
 		hudOptions.setOpaque(false);
-		hudOptions.setBackground(Color.BLUE);
-		hudOptions.setBounds(0, height-83,width, 45);
-		hudOptions.setOpaque(false);
 		
 		// Add buttons
 		hudOptions.add(rollButton);
@@ -278,17 +280,6 @@ public class GUI extends JFrame implements ActionListener{
 		players[4].setBounds(0  , 543, 166, 65);
 		players[5].setBounds(858, 543, 166, 65);
 		
-		// Display players initial money amount
-		for(int i = 0; i < numPlayers; i++) {
-			// 8 * 1 + 10 * 5 + 10 * 10 + 10 * 50 + 8 * 100 + 2 * 500
-			playersMoney[i] = new JLabel("", JLabel.CENTER);
-			playersMoney[i].setOpaque(false);
-			playersMoney[i].setFont(new Font("arial", Font.BOLD, 20));
-			playersMoney[i].setText("$ " + Integer.toString(8 * 1 + 10 * 5 + 10 * 10 + 10 * 50 + 8 * 100 + 2 * 500));
-			playersMoney[i].setVerticalTextPosition(JLabel.BOTTOM);
-			playersMoney[i].setForeground(new Color(255, 255, 255));
-			players[i].add(playersMoney[i]);
-		}
 		
 		int counter = 0;
 		if (amount>6)
@@ -309,13 +300,23 @@ public class GUI extends JFrame implements ActionListener{
 			System.out.println(playersThisSession[i].getName() + " is player " + (i + 1));
 		}
 
+		// Display players initial money amount
+		for(int i = 0; i < numPlayers; i++) {
+			playersMoney[i] = new JLabel("", JLabel.CENTER);
+			playersMoney[i].setOpaque(false);
+			playersMoney[i].setFont(new Font("arial", Font.BOLD, 20));
+			playersMoney[i].setText("$ " + playersThisSession[i].getMoney());
+			playersMoney[i].setVerticalTextPosition(JLabel.BOTTOM);
+			playersMoney[i].setForeground(new Color(255, 255, 255));
+			players[i].add(playersMoney[i]);
+		}
 		
 	}
 	
 	public void unLoadBoard() {
 		getContentPane().remove(0);
 	}
-
+	
 	public void updateDice(int first, int second) {
 		dice[0].setImgPos(0, 0, -1, 101, 100, 600-(100*first), 0, (600-(100*first)+100), 100);
 		dice[1].setImgPos(0, 0, -1, 101, 100, 600-(100*second), 0, (600-(100*second)+100), 100);
@@ -348,15 +349,16 @@ public class GUI extends JFrame implements ActionListener{
 		System.out.print(" to position " + newPos + "\n");
 
 	}
-
-	public void showHouseLimitDialog(){
-		final JOptionPane p = new JOptionPane("You already have 4 houses here.\n" + 
-		" Do you want to buy a hotel instead?",
-		JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
-	}
 	
-	public void showHotelLimitDialog(){
-		final JOptionPane p = new JOptionPane("You already have 4 hotels here.\n");
+	/**
+	 * Shows the card correspondent to players current position.
+	 */
+	public void cardDisplay(int playerID) {
+		// Player's current position will be the card's on board.
+		int curPos = playersThisSession[playerID - 1].getPosition();
+		
+		// Check if position has a card
+		
 	}
 	
 	public void actionPerformed(ActionEvent event) {
