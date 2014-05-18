@@ -29,6 +29,31 @@ public class CardLoader {
 	private static String[] terrainImagePaths;
 	private static String[] pinImagePaths;
 	
+	private static Chance chance[];
+	private static Company company[];
+	private static Terrain terrain[];
+	 class Chance{
+		public String imagePath;
+		public int value;
+		public char special;
+	}
+	
+	class Company {
+		public String imagePath;
+		public int multiplier;
+		public int mortgage;
+		
+	}
+	
+	class Terrain{
+		public String imagePath;
+		public int house[]= new int [4];
+		public int hotel;
+		public int houseCost;
+		public int mortgage;
+		
+	}
+	
 	private static void readFile(File dataFile){
 		
 		FileInputStream f = null;
@@ -39,13 +64,13 @@ public class CardLoader {
 			reader = new BufferedReader(new InputStreamReader(f));
 			
 			String line = reader.readLine();
-			
             while(line != null){
             	// Setting arrays sizes
                 if(line.compareTo("# NUMBER OF CHANCE CARDS") == 0) {
                 	line = reader.readLine();
                 	chanceSize = Integer.parseInt(line);
-                	/*System.out.println(chanceSize);*/
+                	chance = new Chance[chanceSize];
+          
                 }
                 
                 if(line.compareTo("# NUMBER OF COMPANY CARDS") == 0) {
@@ -73,9 +98,32 @@ public class CardLoader {
                 	chanceImagePaths = new String[chanceSize];
                 	
                 	line = reader.readLine();
+                	String parts[];
                 	for(int i = 0; i < chanceSize; i++){
                 		chanceImagePaths[i] = mainFolders + line;
                 		line = reader.readLine();
+                		chance[i].imagePath = line;
+                		parts = line.split(" ");
+                		if (parts[0].compareTo("+")==0){
+                			chance[i].value= Integer.parseInt(parts[1]);
+                			chance[i].special ='A';
+                		}
+                		else if(parts[0].compareTo("-")==0){
+                			chance[i].value= Integer.parseInt(parts[1]);
+                			chance[i].special ='S';
+                		}
+                		else if (parts[0].compareTo("*")==0){
+                			chance[i].special='M';
+                			chance[i].value= Integer.parseInt(parts[1]);
+                		}
+                		else if (parts[0].compareTo("P")==0){
+                			chance[i].special='P';
+                			chance[i].value=0;
+                		}
+                		else if (parts[0].compareTo("L")==0){
+                			chance[i].special='L';
+                			chance[i].value=0;
+                		}
                 	}
                 	
                 	/*for(int i = 0; i < chanceSize; i++){
