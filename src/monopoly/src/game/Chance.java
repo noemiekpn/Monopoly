@@ -8,7 +8,7 @@ public class Chance {
 	boolean keep;	// If the player keep it or goes back to pile
 	Image image;
 	
-	public Chance(char function, int value, boolean keep, Image image) {
+	public Chance(char function, int value, Image image) {
 		this.function = function;
 		this.value = value;
 		this.keep = keep;

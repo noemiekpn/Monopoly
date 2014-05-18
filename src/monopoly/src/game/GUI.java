@@ -12,6 +12,9 @@ import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,9 +59,21 @@ public class GUI extends JFrame implements ActionListener {
 	JLabel[] playersMoney = new JLabel[6];
 	
 	// Player control
-	//private int numPlayers; esqueceu que existe .lenght?
+	//private int numPlayers;
 	private Player[] playersThisSession;
+	
+	/*Card Loader Variables*/
 	private Property properties[] = new Property[36];
+	private Chance chanceCards[] = new Chance[30];
+	private Pin pins[]= new Pin[6];
+	/*Other images*/
+	public Image dice1 = null;
+	public Image dice2 = null;
+	public Image board = null;
+	
+	
+	
+	
 	private boolean alreadyRolled = false;
 	int whoseTurn = 0;
 	
@@ -89,8 +104,7 @@ public class GUI extends JFrame implements ActionListener {
 		
 		File dataConfig;
 		try {
-			dataConfig = new File("src/res/data.config");
-			cardData.load(dataConfig);
+			cardData.load("src/res/data.csv",chanceCards,properties, pins);
 		}
 		catch(Exception e) {	
 			e.printStackTrace();
@@ -176,13 +190,18 @@ public class GUI extends JFrame implements ActionListener {
 		int counter = 0;
 		int n = playersThisSession.length;
 		
-		// Load board image
-		images[counter] = cardData.board;
+		//Load Board
+		try {
+			board =ImageIO.read(new File("src/res/table.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		};
+		images[counter] = board;
 		counter++;
 		
 		// Load pins images according to amount of players
 		while(n != 0) {
-			images[counter] = cardData.pins[counter - 1];
+			images[counter] = pins[counter - 1].img;
 			n--;
 			counter++;
 		}
@@ -253,6 +272,15 @@ public class GUI extends JFrame implements ActionListener {
 		
 	}
 	public void loadDice() {
+		// Load Dice
+		try {
+			dice1=ImageIO.read(new File("src/res/dice_sheet.png"));
+			dice2=ImageIO.read(new File("src/res/dice_sheet.png"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
 		dice[0] =new GUI_PANEL();
 		dice[1] =new GUI_PANEL();
 		dice[0].setBackground(Color.BLACK);
@@ -262,8 +290,8 @@ public class GUI extends JFrame implements ActionListener {
 		dice[1].setBounds((width/2)+10, (height/2)-50, 100, 100);
 		dice[0].setOpaque(true);
 		dice[1].setOpaque(true);
-		dice[0].setImg(cardData.dice1, 1);
-		dice[1].setImg(cardData.dice2, 1);
+		dice[0].setImg(dice1, 1);
+		dice[1].setImg(dice2, 1);
 		dice[0].setImgPos(0, 0, -1, 101, 100, 0, 0, 100, 100);
 		dice[1].setImgPos(0, 0, -1, 101, 100, 0, 0, 100, 100);
 		baseLayer.add(dice[0],new Integer(layerIndex.DICE1.ordinal()),layerIndex.DICE1.ordinal());
@@ -390,7 +418,7 @@ public class GUI extends JFrame implements ActionListener {
 		
 		// Check if position has a card
 		 for(card=0;card< properties.length;card++){
-			 if(properties[card].getLocation() == curPos){
+			 if(properties[card].getPropertyLocation() == curPos){
 				 break;
 			 }
 		 }

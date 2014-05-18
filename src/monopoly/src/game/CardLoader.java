@@ -1,29 +1,23 @@
 package monopoly.src.game;
 
 import java.awt.Image;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
+
 import java.io.Reader;
 
 import javax.imageio.ImageIO;
 
 import src.main.java.org.apache.commons.csv.CSVFormat;
-import src.main.java.org.apache.commons.csv.CSVFormat.CSVFormatBuilder;
 import src.main.java.org.apache.commons.csv.CSVRecord;
 
 public class CardLoader {
 	public Image dice1 = null;
 	public Image dice2 = null;
 	public Image board = null;
-	public Image[] chanceCards = null;
-	public Image[] companyCards = null;
-	public Image[] terrainCards = null;
-	public Image[] pins = null;
+
 
 	
 	
@@ -48,7 +42,7 @@ public class CardLoader {
 			}
 			/*Now opens each file to set it's objects*/
 			
-			System.out.println(paths[0]+names[0]);
+			//System.out.println(paths[0]+names[0]);
 			input= new FileReader (paths[0]+names[0]); //CHANCE
 			lines = CSVFormat.EXCEL.parse(input);
 			i=0;
@@ -65,7 +59,7 @@ public class CardLoader {
 			lines = CSVFormat.EXCEL.parse(input);
 			i=0;
 			for(CSVRecord line:lines){
-				System.out.println(paths[1]+line.get(0));
+				//System.out.println(paths[1]+line.get(0));
 				properties[i] =(Property) new Company(
 						line.get(0),//"name"
 						Integer.parseInt(line.get(1)),//"price"
@@ -82,6 +76,7 @@ public class CardLoader {
 			lines = CSVFormat.EXCEL.parse(input);
 			//i=0;
 			for(CSVRecord line:lines){
+				System.out.println(paths[2]+line.get(0));
 				properties[i] = (Property) new Terrain(
 						line.get(0),//"name"
 						Integer.parseInt(line.get(1)),//"price"
@@ -106,20 +101,21 @@ public class CardLoader {
 			i=0;
 			for(CSVRecord line:lines){
 				pins[i] = new Pin(
-						line.get("color"),
-						ImageIO.read(new File(paths[3]+line.get("name")))
+						line.get(1),//"color"
+						ImageIO.read(new File(paths[3]+line.get(0)))//"name"
 						);
 				i++;
 
 			}
 			
 			
+			
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	    catch (IOException e) {
-			// TODO Auto-generated catch block
+			
 			e.printStackTrace();
 	    }
-}
+	}
 }
