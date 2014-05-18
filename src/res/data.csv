@@ -1,0 +1,5 @@
+path;name;
+src/res/Chance Cards/;chance.csv
+src/res/Companies Cards/;company.csv
+src/res/Terrain Cards/;terrain.csv
+src/res/;pins.csv
