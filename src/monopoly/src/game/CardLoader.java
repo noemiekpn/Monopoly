@@ -36,6 +36,9 @@ public class CardLoader {
 		public String imagePath;
 		public int value;
 		public char special;
+		public void setP(String a){
+			imagePath=a;
+		}
 	}
 	
 	class Company {
@@ -47,9 +50,11 @@ public class CardLoader {
 	
 	class Terrain{
 		public String imagePath;
+		public int rent;
 		public int house[]= new int [4];
 		public int hotel;
 		public int houseCost;
+		public int hotelCost;
 		public int mortgage;
 		
 	}
@@ -69,13 +74,13 @@ public class CardLoader {
                 if(line.compareTo("# NUMBER OF CHANCE CARDS") == 0) {
                 	line = reader.readLine();
                 	chanceSize = Integer.parseInt(line);
-                	chance = new Chance[chanceSize];
           
                 }
                 
                 if(line.compareTo("# NUMBER OF COMPANY CARDS") == 0) {
                 	line = reader.readLine();
                 	companySize = Integer.parseInt(line);
+                	company = new Company[companySize];
                 	/*System.out.println(companySize);*/
                 }
 
@@ -96,13 +101,15 @@ public class CardLoader {
                 	line = reader.readLine();
                 	String mainFolders = line;
                 	chanceImagePaths = new String[chanceSize];
-                	
+                	chance = new Chance[chanceSize];
                 	line = reader.readLine();
                 	String parts[];
                 	for(int i = 0; i < chanceSize; i++){
-                		chanceImagePaths[i] = mainFolders + line;
+                		chanceImagePaths[i] = mainFolders+line;
+                		System.out.println(chanceImagePaths[i]);
+                		chance[i].setP(mainFolders+line) ; //Nessa Linha
+                		System.out.println(chance[i].imagePath);
                 		line = reader.readLine();
-                		chance[i].imagePath = line;
                 		parts = line.split(" ");
                 		if (parts[0].compareTo("+")==0){
                 			chance[i].value= Integer.parseInt(parts[1]);
@@ -126,20 +133,25 @@ public class CardLoader {
                 		}
                 	}
                 	
-                	/*for(int i = 0; i < chanceSize; i++){
+                	for(int i = 0; i < chanceSize; i++){
                 		System.out.println(chanceImagePaths[i]);
-                	}*/
+                	}
                 }
                 
                 if(line.compareTo("# PATH OF EACH COMPANY CARD") == 0) {
                 	line = reader.readLine();
                 	String mainFolders = line;
                 	companyImagePaths= new String[companySize];
-                	
+              
+                	String parts[];
                 	line = reader.readLine();
                 	for(int i = 0; i < companySize; i++){
                 		companyImagePaths[i] = mainFolders + line;
+                		company[i].imagePath=companyImagePaths[i];
                 		line = reader.readLine();
+                		parts= line.split(" ");
+                		company[i].multiplier= Integer.parseInt(parts[0]);
+                		company[i].mortgage= Integer.parseInt(parts[1]);
                 	}
                 	
                 	/*for(int i = 0; i < companySize; i++){
@@ -151,11 +163,22 @@ public class CardLoader {
                 	line = reader.readLine();
                 	String mainFolders = line;
                 	terrainImagePaths= new String[terrainSize];
-                	
+                	String parts[];
                 	line = reader.readLine();
                 	for(int i = 0; i < terrainSize; i++){
                 		terrainImagePaths[i] = mainFolders + line;
+                		terrain[i].imagePath= terrainImagePaths[i];
                 		line = reader.readLine();
+                		parts = line.split(" ");
+                		terrain[i].rent = Integer.parseInt(parts[0]);
+                		terrain[i].house[0] = Integer.parseInt(parts[1]);
+                		terrain[i].house[1] = Integer.parseInt(parts[2]);
+                		terrain[i].house[2] = Integer.parseInt(parts[3]);
+                		terrain[i].house[3] = Integer.parseInt(parts[4]);
+                		terrain[i].hotel = Integer.parseInt(parts[5]);
+                		terrain[i].houseCost = Integer.parseInt(parts[6]);
+                		terrain[i].houseCost = Integer.parseInt(parts[7]);
+                		terrain[i].mortgage = Integer.parseInt(parts[8]);
                 	}
                 	
                 	/*for(int i = 0; i < terrainSize; i++){

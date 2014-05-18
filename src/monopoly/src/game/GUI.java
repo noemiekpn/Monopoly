@@ -272,7 +272,7 @@ public class GUI extends JFrame implements ActionListener {
 	}
 	
 	public void loadPlayers(int amount) {
-		//numPlayers = amount;
+		playersThisSession = new Player[amount];
 		
 		for(int i = 0; i < players.length; i++) {
 			players[i] = new GUI_PANEL();
@@ -294,21 +294,8 @@ public class GUI extends JFrame implements ActionListener {
 		players[4].setBounds(0  , 543, 166, 65);
 		players[5].setBounds(858, 543, 166, 65);
 		
+	
 		// Players loading
-		playersThisSession = new Player[amount];
-		
-		int counter = 0;
-		if (amount>6)
-			amount=6;
-		else if (amount<2)
-			amount=2;
-		while(amount!=0){
-			baseLayer.add(players[counter],new Integer(3),3+counter);
-			amount--;
-			counter++;
-		}		
-		
-		
 		for(int i = 0; i < playersThisSession.length; i++) {
 			playersThisSession[i] = new Player(i + 1, "Jogador " + (i + 1));
 			System.out.println(playersThisSession[i].getName() + " is player " + (i + 1));
@@ -324,6 +311,18 @@ public class GUI extends JFrame implements ActionListener {
 			playersMoney[i].setForeground(new Color(255, 255, 255));
 			players[i].add(playersMoney[i]);
 		}
+		
+		int counter = 0;
+		if (amount>6)
+			amount=6;
+		else if (amount<2)
+			amount=2;
+		while(amount!=0){
+			baseLayer.add(players[counter],new Integer(3),3+counter);
+			amount--;
+			counter++;
+		}		
+		
 		
 	}
 	
